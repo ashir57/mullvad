@@ -80,7 +80,7 @@ def check_random_number():
                 "sec-fetch-site": "same-site",
                 "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36"
             }
-            response = r.get(url, proxies=proxy, headers=headers, timeout=10)
+            response = r.get(url, proxies=proxy, headers=headers, timeout=25)
             TOTAL_ACCOUNTS += 1
             if "auth_token" in response.text:
                 REGISTERED_ACCOUNTS += 1
@@ -122,7 +122,7 @@ def main():
 
     try:
         # Create thread pool
-        with ThreadPoolExecutor(max_workers=30) as executor:
+        with ThreadPoolExecutor(max_workers=50) as executor:
             while not STOP_FLAG:
                 executor.submit(check_random_number)
 
