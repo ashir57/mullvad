@@ -26,7 +26,7 @@ STOP_FLAG = False
 
 def fetch_proxies():
     global PROXIES
-    print('Getting proxies...')
+    
     try:
         proxy = "5.161.219.116:8080"
         proxy_dict = {
@@ -34,6 +34,10 @@ def fetch_proxies():
             "https": f"http://{proxy}",
         }
         response = r.get(PROXY_API_URL,proxies=proxy_dict, timeout=30,verify=False)
+        list = response.content.decode()
+        line_count = sum(1 for _ in list)
+        print(f'fetched {line_count} Proxies')
+
         if response.status_code == 200:
             proxy_list = response.text.strip().split('\n')
             print
@@ -48,13 +52,15 @@ def fetch_proxies():
 
 
 def check_random_number():
-    global PROXIES, TOTAL_ACCOUNTS, REGISTERED_ACCOUNTS,PROXY_ERRPR,BAD_ACCOUNTS
+    global PROXIES, TOTAL_ACCOUNTS, REGISTERED_ACCOUNTS,PROXY_ERRPR,BAD_ACCOUNTS, STOP_FLAG
     while not STOP_FLAG:
         proxy = PROXIES.pop(0) if PROXIES else None
         if not proxy:
-            print('Updating Proxy Please Wait')
+            STOP_FLAG = True
             # Update proxies if the list is empty
             fetch_proxies()
+            
+            STOP_FLAG = False
             proxy = PROXIES.pop(0) if PROXIES else None
 
         try:
@@ -92,7 +98,7 @@ def check_random_number():
 
             elif 'THROTTLED' in response.text :
                 BAD_ACCOUNTS+=1
-                
+
             print(f"\rGood: {REGISTERED_ACCOUNTS} | Bad: {BAD_ACCOUNTS} PROXY: {PROXY_ERRPR} \r", end='')
             sys.stdout.flush()
 
@@ -101,6 +107,7 @@ def check_random_number():
             PROXY_ERRPR+=1
         except KeyboardInterrupt :
             print('closing')
+            STOP_FLAG =True
 
         
         
