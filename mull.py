@@ -28,12 +28,8 @@ def fetch_proxies():
     global PROXIES
     
     try:
-        proxy = "5.161.219.116:8080"
-        proxy_dict = {
-            "http": f"http://{proxy}",
-            "https": f"http://{proxy}",
-        }
-        response = r.get(PROXY_API_URL,proxies=proxy_dict, timeout=30,verify=False)
+        
+        response = r.get(PROXY_API_URL, timeout=30,verify=False)
         list = response.content.decode()
         line_count = sum(1 for _ in list)
         print(f'fetched {line_count} Proxies')
